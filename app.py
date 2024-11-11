@@ -1,20 +1,20 @@
-import os
 import json
-from flask import Flask, request, jsonify
-from dotenv import load_dotenv
+from flask import Flask
+from api.main import main_bp
+import utils
 
 # load setting
-load_dotenv()
-SERVICE_KEY = os.getenv('SERVICE_KEY')
 with open('./config.json', 'r') as f:
     CONFIG = json.load(f)
 
 # create app
 app = Flask(__name__)
+app.register_blueprint(main_bp)
 
-@app.route('/', methods=['GET'])
-def home():
-    return "Hello World"
+# 404 error handling
+@app.errorhandler(404)
+def page_not_found(e):
+    return utils.get_response(15), 404
 
 # start app
 if __name__ == '__main__':
